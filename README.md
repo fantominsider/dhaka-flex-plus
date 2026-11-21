@@ -61,3 +61,11 @@ Open issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.m
 ## GitHub-only development
 
 Source commits, build logs, CI artifacts and test APK prereleases are all managed in GitHub. Google Drive is optional and is not required for further development. See [GitHub-only workflow](docs/GITHUB_ONLY_WORKFLOW.md) and [first-device test plan](docs/RELEASE_TEST_PLAN.md). **This release is source-only until Actions succeeds.**
+
+## Build a test APK without GitHub Actions
+
+If GitHub Actions is disabled by a billing lock, you can compile in a free Google Colab CPU notebook instead:
+
+[**Open Dhaka Flex Plus APK Builder in Google Colab**](https://colab.research.google.com/github/fantominsider/dhaka-flex-plus/blob/main/tools/DhakaFlexPlus_Colab_APK_Builder.ipynb)
+
+Sign into Colab, select **Runtime → Run all**, and use the browser download for `app-debug.apk`. The notebook clones `main`, installs Java 17, the Android SDK and Gradle 8.7, attempts `:app:assembleDebug`, and downloads a diagnostic log if compilation fails. **This is an unverified test build, not a signed production release.** Colab free-tier capacity is not guaranteed.

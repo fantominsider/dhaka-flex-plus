@@ -1,5 +1,11 @@
 plugins { id 'com.android.application' }
 
+// Leave unset for a universal APK, or use -PdhakaAbi=arm64-v8a for a smaller APK.
+def apkAbi = providers.gradleProperty('dhakaAbi').orNull
+if (apkAbi != null && !(apkAbi in ['arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'])) {
+    throw new GradleException('Unsupported dhakaAbi: ' + apkAbi)
+}
+
 android {
     namespace 'org.dhakaflexplus.player'
     compileSdk 36
@@ -10,10 +16,18 @@ android {
         targetSdk 32
         versionCode 7
         versionName '0.6.1'
+        if (apkAbi != null) {
+            ndk { abiFilters apkAbi }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+    }
+    lint {
+        // Configure the Play Store target check as a warning for sideloaded
+        // testing. Review targetSdk before publishing on Play.
+        warning 'ExpiredTargetSdkVersion'
     }
 }
 

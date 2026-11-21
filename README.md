@@ -2,7 +2,7 @@
 
 **Open-source Android media browser and LibVLC player** for phones, tablets, Android TV, and experimental XR viewing. Independent project; not affiliated with VideoLAN, Meta, PICO, XREAL, any ISP, or the third-party DhakaFlix application.
 
-> **Release status: v0.6.1 source-only / GitHub migration release candidate. NOT built or device tested.** Do not distribute as a verified working APK until GitHub Actions/Android Studio builds and real-device playback checks pass.
+> **Release status: v0.6.1 debug test build.** APK compilation, automated checks and signature verification completed on 2026-11-22. Real-device installation and playback remain unverified. See the [build verification record](docs/BUILD_VERIFICATION_2026-11-22.md).
 
 ## Features in source
 
@@ -20,7 +20,7 @@
 3. If the workflow passes, download `dhaka-flex-plus-debug-apk` from that run's **Artifacts**. The ZIP artifact contains `app-debug.apk`; install only for testing.
 4. On a networked Android Studio machine, open the project root and build with Android SDK platform 36, JDK 17, Gradle 8.11.1 and Android Gradle Plugin 8.10.1. Internet is required for first Gradle/LibVLC dependency resolution.
 
-**The build has not been executed successfully in the authoring environment.** CI may expose Android compile errors requiring fixes. A release-signed version requires a secure, persistent signing key, license verification, device testing and an appropriate delivery/update process.
+**The debug APK has been compiled successfully with the Android toolchain.** Device qualification remains pending. Use `-PdhakaAbi=arm64-v8a` with Gradle for a smaller ARM64-only test APK; omit it for the universal APK. A release-signed version requires a secure, persistent signing key, license verification, device testing and an appropriate delivery/update process.
 
 ## Factory server presets and editing (v0.6)
 
@@ -60,7 +60,7 @@ Open issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.m
 
 ## GitHub-only development
 
-Source commits, build logs, CI artifacts and test APK prereleases are all managed in GitHub. Google Drive is optional and is not required for further development. See [GitHub-only workflow](docs/GITHUB_ONLY_WORKFLOW.md) and [first-device test plan](docs/RELEASE_TEST_PLAN.md). **This release is source-only until Actions succeeds.**
+Source commits, build logs, CI artifacts and test APK prereleases are all managed in GitHub. Google Drive is optional and is not required for further development. See [GitHub-only workflow](docs/GITHUB_ONLY_WORKFLOW.md) and [first-device test plan](docs/RELEASE_TEST_PLAN.md). The [first local debug build](docs/BUILD_VERIFICATION_2026-11-22.md) is verified independently of GitHub Actions availability.
 
 ## Build a test APK without GitHub Actions
 
@@ -72,6 +72,6 @@ Sign into Colab, select **Runtime → Run all**, and use the browser download fo
 
 ### LibVLC 3.7.7 build compatibility (November 2026)
 
-A Colab build log revealed that LibVLC 3.7.7 requires `compileSdk >= 36`, while the initial project used SDK 35. The build is now configured for `compileSdk 36`, Android Gradle Plugin 8.10.1, and Gradle 8.11.1. **The full Android build remains unverified until Colab completes successfully.** Reopen the latest Colab notebook (not an already-loaded old tab) and rerun all cells. If it fails again, share the newly downloaded diagnostic log.
+A Colab build log revealed that LibVLC 3.7.7 requires `compileSdk >= 36`, while the initial project used SDK 35. The build is now configured for `compileSdk 36`, Android Gradle Plugin 8.10.1, and Gradle 8.11.1. **The API 36 configuration has now compiled successfully in the local Android toolchain; device testing remains pending.** Reopen the latest Colab notebook (not an already-loaded old tab) and rerun all cells. If it fails again, share the newly downloaded diagnostic log.
 
 > **Colab stale-notebook note:** If the build log says Gradle **8.7**, `compileSdk 35`, or Android Gradle Plugin **8.6.1**, the *old* builder ran. Use the **v2** Colab link above in a new tab and select **Runtime → Restart session**, followed by **Runtime → Run all**. The new failure log is named `DhakaFlexPlus-Colab-Build-v2.log`.

@@ -182,7 +182,15 @@ public final class LocalXrService extends Service {
             // Use HTTP/1.1 close-delimited transfer when upstream length is unknown.
             String contentRange=remote.getHeaderField("Content-Range");
             String extras="Accept-Ranges: bytes\r\n"+(code==206&&contentRange!=null?"Content-Range: "+contentRange+"\r\n":"");
-            headers(out,code,mime,remote.getContentLengthLong(),extras);
+            // URLConnection.getContentLengthLong() starts at API 24. Parse the
+            // header on every version so Android 6 also supports videos >2 GiB.
+            long contentLength=-1;
+            String lengthHeader=remote.getHeaderField("Content-Length");
+            if(lengthHeader!=null){
+                try{contentLength=Long.parseLong(lengthHeader.trim());}
+                catch(NumberFormatException ignored){}
+            }
+            headers(out,code,mime,contentLength,extras);
             if(!head){
                 try(InputStream input=remote.getInputStream()){
                     byte[] bytes=new byte[64*1024];int count;

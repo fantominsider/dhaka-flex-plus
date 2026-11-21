@@ -18,7 +18,7 @@
 1. Push **the extracted contents** of this repository ZIP to the root of a **public** GitHub repository called `dhaka-flex-plus`. Do not commit the ZIP itself as the repository's only file.
 2. Open **Actions** → **Android APK (debug)** → **Run workflow** (or push to `main`).
 3. If the workflow passes, download `dhaka-flex-plus-debug-apk` from that run's **Artifacts**. The ZIP artifact contains `app-debug.apk`; install only for testing.
-4. On a networked Android Studio machine, open the project root and build with Android SDK 35, JDK 17, Gradle 8.7 and Android Gradle Plugin 8.6.1. Internet is required for first Gradle/LibVLC dependency resolution.
+4. On a networked Android Studio machine, open the project root and build with Android SDK platform 36, JDK 17, Gradle 8.11.1 and Android Gradle Plugin 8.10.1. Internet is required for first Gradle/LibVLC dependency resolution.
 
 **The build has not been executed successfully in the authoring environment.** CI may expose Android compile errors requiring fixes. A release-signed version requires a secure, persistent signing key, license verification, device testing and an appropriate delivery/update process.
 
@@ -68,4 +68,8 @@ If GitHub Actions is disabled by a billing lock, you can compile in a free Googl
 
 [**Open Dhaka Flex Plus APK Builder in Google Colab**](https://colab.research.google.com/github/fantominsider/dhaka-flex-plus/blob/main/tools/DhakaFlexPlus_Colab_APK_Builder.ipynb)
 
-Sign into Colab, select **Runtime → Run all**, and use the browser download for `app-debug.apk`. The notebook clones `main`, installs Java 17, the Android SDK and Gradle 8.7, attempts `:app:assembleDebug`, and downloads a diagnostic log if compilation fails. **This is an unverified test build, not a signed production release.** Colab free-tier capacity is not guaranteed.
+Sign into Colab, select **Runtime → Run all**, and use the browser download for `app-debug.apk`. The notebook clones `main`, installs Java 17, the Android SDK and Gradle 8.11.1, attempts `:app:assembleDebug`, and downloads a diagnostic log if compilation fails. **This is an unverified test build, not a signed production release.** Colab free-tier capacity is not guaranteed.
+
+### LibVLC 3.7.7 build compatibility (November 2026)
+
+A Colab build log revealed that LibVLC 3.7.7 requires `compileSdk >= 36`, while the initial project used SDK 35. The build is now configured for `compileSdk 36`, Android Gradle Plugin 8.10.1, and Gradle 8.11.1. **The full Android build remains unverified until Colab completes successfully.** Reopen the latest Colab notebook (not an already-loaded old tab) and rerun all cells. If it fails again, share the newly downloaded diagnostic log.

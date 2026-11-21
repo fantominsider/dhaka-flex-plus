@@ -1,0 +1,106 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Tests and debug APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate public sources
+        shell: bash
+        run: |
+          set -eu
+          test ! -e DhakaFlixTV.apk
+          test -f LICENSE
+          test -f app/src/main/java/org/dhakaflexplus/player/DefaultServerCatalog.java
+          if grep -R -n -E '172\.16\.50\.(7|10|12|14)' app/src/main --exclude=DefaultServerCatalog.java; then
+            echo 'Factory IPs must occur only in the factory catalog.' >&2
+            exit 1
+          fi
+          if grep -R -n 'com\.shohure\.mediabrowser' app/src/main; then
+            echo 'Former application ID occurs in publicly distributed source.' >&2
+            exit 1
+          fi
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Run standalone source tests
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p build/standalone-tests
+          javac -d build/standalone-tests \
+            app/src/main/java/org/dhakaflexplus/player/IptvParser.java \
+            app/src/main/java/org/dhakaflexplus/player/DefaultServerCatalog.java \
+            tests/TestIptv.java tests/TestIptvExtra.java tests/TestServerPresets.java
+          java -cp build/standalone-tests TestIptv
+          java -cp build/standalone-tests TestIptvExtra
+          java -cp build/standalone-tests TestServerPresets
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install Android SDK components
+        shell: bash
+        run: |
+          set -eu
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'platform-tools'
+      - name: Set up Gradle 8.7
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Compile debug APK
+        run: gradle --no-daemon --stacktrace :app:assembleDebug
+      - name: Prepare preview APK and checksum
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/app-debug.apk dist/DhakaFlexPlus-debug.apk
+          cd dist
+          sha256sum DhakaFlexPlus-debug.apk > SHA256SUMS.txt
+      - name: Save APK build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dhaka-flex-plus-debug-apk
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
+
+  publish-test-release:
+    name: Publish tagged preview APK
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download tested APK
+        uses: actions/download-artifact@v4
+        with:
+          name: dhaka-flex-plus-debug-apk
+          path: dist
+      - name: Publish GitHub prerelease (debug / testing only)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -eu
+          gh release create "$GITHUB_REF_NAME" dist/DhakaFlexPlus-debug.apk dist/SHA256SUMS.txt \
+            --repo "$GH_REPO" --title "Dhaka Flex Plus $GITHUB_REF_NAME (TEST ONLY)" \
+            --prerelease \
+            --notes "Unverified Android debug/test build from GitHub Actions. Do not treat this as a signed production release. Check the Actions run, device behavior and LibVLC licensing before redistribution."

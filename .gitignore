@@ -1,0 +1,27 @@
+# Android/Gradle
+.gradle/
+build/
+**/build/
+local.properties
+.cxx/
+.externalNativeBuild/
+.idea/
+*.iml
+.DS_Store
+# Never commit signing credentials, server exports or account playlists
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+*.env
+.env*
+*backup*.json
+*playlist*.m3u
+*playlist*.m3u8
+secrets.properties
+server-library*.json
+# Generated binaries
+*.apk
+*.aab

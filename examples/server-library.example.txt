@@ -1,0 +1,5 @@
+Example server entry (not a real public media server):
+Display name: My local media library
+URL: http://192.168.1.50:8080/Movies/
+
+Add it in-app only after replacing with your own authorized reachable address.

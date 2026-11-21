@@ -1,0 +1,23 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'org.dhakaflexplus.player'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'org.dhakaflexplus.player'
+        minSdk 23
+        targetSdk 32
+        versionCode 7
+        versionName '0.6.1'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    // Stable VideoLAN LibVLC engine; the native libraries ship inside the app.
+    implementation 'org.videolan.android:libvlc-all:3.7.7'
+}

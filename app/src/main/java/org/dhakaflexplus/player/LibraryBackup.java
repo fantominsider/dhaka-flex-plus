@@ -51,8 +51,9 @@ public final class LibraryBackup {
             JSONArray sources=new JSONArray();
             for(String source:new IptvStore(ctx).playlistSources())sources.put(source);
             root.put("iptv_sources",sources);
+            // Android JSONObject.toString(int) may throw JSONException; keep it in the guarded block.
+            return root.toString(2);
         }catch(Exception e){throw new IllegalStateException("Backup serialization failed",e);}
-        return root.toString(2);
     }
     public static final class ImportPlan {
         public final ArrayList<ServerStore.Server> servers;

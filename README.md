@@ -66,10 +66,12 @@ Source commits, build logs, CI artifacts and test APK prereleases are all manage
 
 If GitHub Actions is disabled by a billing lock, you can compile in a free Google Colab CPU notebook instead:
 
-[**Open Dhaka Flex Plus APK Builder in Google Colab**](https://colab.research.google.com/github/fantominsider/dhaka-flex-plus/blob/main/tools/DhakaFlexPlus_Colab_APK_Builder.ipynb)
+[**Open Dhaka Flex Plus APK Builder in Google Colab**](https://colab.research.google.com/github/fantominsider/dhaka-flex-plus/blob/main/tools/DhakaFlexPlus_Colab_APK_Builder_v2.ipynb)
 
-Sign into Colab, select **Runtime → Run all**, and use the browser download for `app-debug.apk`. The notebook clones `main`, installs Java 17, the Android SDK and Gradle 8.11.1, attempts `:app:assembleDebug`, and downloads a diagnostic log if compilation fails. **This is an unverified test build, not a signed production release.** Colab free-tier capacity is not guaranteed.
+Sign into Colab, select **Runtime → Run all**, and use the browser download for `app-debug.apk`. The notebook clones `main`, checks source compatibility and installs Java 17, Android SDK API 36 and Gradle 8.11.1, attempts `:app:assembleDebug`, and downloads a diagnostic log if compilation fails. **This is an unverified test build, not a signed production release.** Colab free-tier capacity is not guaranteed.
 
 ### LibVLC 3.7.7 build compatibility (November 2026)
 
 A Colab build log revealed that LibVLC 3.7.7 requires `compileSdk >= 36`, while the initial project used SDK 35. The build is now configured for `compileSdk 36`, Android Gradle Plugin 8.10.1, and Gradle 8.11.1. **The full Android build remains unverified until Colab completes successfully.** Reopen the latest Colab notebook (not an already-loaded old tab) and rerun all cells. If it fails again, share the newly downloaded diagnostic log.
+
+> **Colab stale-notebook note:** If the build log says Gradle **8.7**, `compileSdk 35`, or Android Gradle Plugin **8.6.1**, the *old* builder ran. Use the **v2** Colab link above in a new tab and select **Runtime → Restart session**, followed by **Runtime → Run all**. The new failure log is named `DhakaFlexPlus-Colab-Build-v2.log`.

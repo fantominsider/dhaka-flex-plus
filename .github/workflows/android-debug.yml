@@ -57,11 +57,11 @@ jobs:
         run: |
           set -eu
           yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'platform-tools'
-      - name: Set up Gradle 8.7
+          sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'
+      - name: Set up Gradle 8.11.1
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.7'
+          gradle-version: '8.11.1'
       - name: Compile debug APK
         run: gradle --no-daemon --stacktrace :app:assembleDebug
       - name: Prepare preview APK and checksum

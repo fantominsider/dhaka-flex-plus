@@ -112,7 +112,7 @@ public final class PlayerActivity extends Activity {
             vlc=new LibVLC(this,new ArrayList<String>());
             player=new MediaPlayer(vlc);
             player.attachViews(surface,null,false,false);
-            player.setEventListener(event->runOnUiThread(()->handleEvent(event.getType())));
+            player.setEventListener(event->runOnUiThread(()->handleEvent(event.type)));
             Media media=new Media(vlc,Uri.parse(url));
             boolean software=store.preferences().getBoolean("vlc_software_decoder",false);
             media.setHWDecoderEnabled(!software,false);
